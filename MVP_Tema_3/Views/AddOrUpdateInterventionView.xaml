@@ -1,0 +1,28 @@
+﻿<Window x:Class="MVP_Tema_3.Views.AddOrUpdateInterventionView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MVP_Tema_3.Views"
+        xmlns:viewModels="clr-namespace:MVP_Tema_3.ViewModels"
+        mc:Ignorable="d"
+        Title="AddOrUpdateInterventionView" SizeToContent="WidthAndHeight">
+    <Window.DataContext>
+        <viewModels:AddOrUpdateInterventionViewModel></viewModels:AddOrUpdateInterventionViewModel>
+    </Window.DataContext>
+    <StackPanel Margin="10">
+        <TextBlock Text="Description"></TextBlock>
+        <TextBox Text="{Binding Intervention.Description}"></TextBox>
+
+        <TextBlock Text="Duration"></TextBlock>
+        <TextBox Text="{Binding Intervention.Duration}"></TextBox>
+
+        <TextBlock Text="Price"></TextBlock>
+        <TextBox Text="{Binding Price.Value}"></TextBox>
+
+        <TextBlock Text="Starting date"></TextBlock>
+        <Calendar DisplayDate="{Binding Price.StartingDate}" SelectedDate="{Binding Price.StartingDate}"></Calendar>
+
+        <Button Command="{Binding AddOrUpdateCommand}" Margin="0,5" Content="Done"></Button>
+    </StackPanel>
+</Window>

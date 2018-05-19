@@ -1,0 +1,658 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="MVP3Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Appointment">
+          <Key>
+            <PropertyRef Name="IdAppointment" />
+          </Key>
+          <Property Name="IdAppointment" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IdPatient" Type="int" Nullable="false" />
+          <Property Name="Date" Type="date" Nullable="false" />
+          <Property Name="Time" Type="time" Precision="7" Nullable="false" />
+          <Property Name="EndTime" Type="time" Precision="7" />
+          <Property Name="Deleted" Type="varchar" MaxLength="1" />
+        </EntityType>
+        <EntityType Name="AppointmentIntervention">
+          <Key>
+            <PropertyRef Name="IdAppointmentIntervention" />
+          </Key>
+          <Property Name="IdAppointmentIntervention" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IdAppointment" Type="int" Nullable="false" />
+          <Property Name="IdInterventie" Type="int" Nullable="false" />
+          <Property Name="Deleted" Type="varchar" MaxLength="1" />
+        </EntityType>
+        <EntityType Name="Intervention">
+          <Key>
+            <PropertyRef Name="IdIntervention" />
+          </Key>
+          <Property Name="IdIntervention" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Description" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Duration" Type="int" Nullable="false" />
+          <Property Name="Deleted" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Patient">
+          <Key>
+            <PropertyRef Name="IdPatient" />
+          </Key>
+          <Property Name="IdPatient" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FirstName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="LastName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="IdUser" Type="int" Nullable="false" />
+          <Property Name="Deleted" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Price">
+          <Key>
+            <PropertyRef Name="IdPrice" />
+          </Key>
+          <Property Name="IdPrice" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IdIntervention" Type="int" Nullable="false" />
+          <Property Name="StartingDate" Type="date" Nullable="false" />
+          <Property Name="FinalDate" Type="date" />
+          <Property Name="Value" Type="int" Nullable="false" />
+          <Property Name="Deleted" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="IdUser" />
+          </Key>
+          <Property Name="IdUser" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Username" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Password" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="FirstName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="LastName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Type" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Deleted" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <Association Name="FK_Appointment_Patient">
+          <End Role="Patient" Type="Self.Patient" Multiplicity="1" />
+          <End Role="Appointment" Type="Self.Appointment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Patient">
+              <PropertyRef Name="IdPatient" />
+            </Principal>
+            <Dependent Role="Appointment">
+              <PropertyRef Name="IdPatient" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AppointmentIntervention_Appointment">
+          <End Role="Appointment" Type="Self.Appointment" Multiplicity="1" />
+          <End Role="AppointmentIntervention" Type="Self.AppointmentIntervention" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Appointment">
+              <PropertyRef Name="IdAppointment" />
+            </Principal>
+            <Dependent Role="AppointmentIntervention">
+              <PropertyRef Name="IdAppointment" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AppointmentIntervention_Intervention">
+          <End Role="Intervention" Type="Self.Intervention" Multiplicity="1" />
+          <End Role="AppointmentIntervention" Type="Self.AppointmentIntervention" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Intervention">
+              <PropertyRef Name="IdIntervention" />
+            </Principal>
+            <Dependent Role="AppointmentIntervention">
+              <PropertyRef Name="IdInterventie" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Patient_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="Patient" Type="Self.Patient" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="IdUser" />
+            </Principal>
+            <Dependent Role="Patient">
+              <PropertyRef Name="IdUser" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Price_Intervention">
+          <End Role="Intervention" Type="Self.Intervention" Multiplicity="1" />
+          <End Role="Price" Type="Self.Price" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Intervention">
+              <PropertyRef Name="IdIntervention" />
+            </Principal>
+            <Dependent Role="Price">
+              <PropertyRef Name="IdIntervention" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="CurrentPricesForInterventions" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="DeleteAppointment" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="idAppointment" Type="int" Mode="In" />
+        </Function>
+        <Function Name="DeleteAppointmentIntervention" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="idAppointment" Type="int" Mode="In" />
+          <Parameter Name="idIntervention" Type="int" Mode="In" />
+        </Function>
+        <Function Name="DeleteDoctor" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="idUser" Type="int" Mode="In" />
+        </Function>
+        <Function Name="DeleteIntervention" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="idIntervention" Type="int" Mode="In" />
+        </Function>
+        <Function Name="DeletePatient" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="idPatient" Type="int" Mode="In" />
+        </Function>
+        <Function Name="InsertAppointment" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="idPatient" Type="int" Mode="In" />
+          <Parameter Name="date" Type="date" Mode="In" />
+          <Parameter Name="time" Type="time" Mode="In" />
+        </Function>
+        <Function Name="InsertAppointmentIntervention" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="idAppointment" Type="int" Mode="In" />
+          <Parameter Name="idIntervention" Type="int" Mode="In" />
+        </Function>
+        <Function Name="InsertDoctor" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="username" Type="varchar" Mode="In" />
+          <Parameter Name="password" Type="varchar" Mode="In" />
+          <Parameter Name="firstName" Type="varchar" Mode="In" />
+          <Parameter Name="lastName" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="InsertIntervention" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="description" Type="varchar" Mode="In" />
+          <Parameter Name="duration" Type="int" Mode="In" />
+          <Parameter Name="value" Type="int" Mode="In" />
+          <Parameter Name="startingDate" Type="date" Mode="In" />
+        </Function>
+        <Function Name="InsertPatient" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="firstName" Type="varchar" Mode="In" />
+          <Parameter Name="lastName" Type="varchar" Mode="In" />
+          <Parameter Name="idUser" Type="int" Mode="In" />
+        </Function>
+        <Function Name="InsertPrice" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="idIntervention" Type="int" Mode="In" />
+          <Parameter Name="value" Type="int" Mode="In" />
+          <Parameter Name="startingDate" Type="date" Mode="In" />
+        </Function>
+        <Function Name="InterventionPricesBeforeDate" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="idIntervention" Type="int" Mode="In" />
+          <Parameter Name="date" Type="date" Mode="In" />
+        </Function>
+        <Function Name="Login" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="username" Type="varchar" Mode="In" />
+          <Parameter Name="password" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="SortPatientsByInterventionsNumber" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="idDoctor" Type="int" Mode="In" />
+        </Function>
+        <Function Name="UpdateAppointment" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="idAppointment" Type="int" Mode="In" />
+          <Parameter Name="date" Type="date" Mode="In" />
+          <Parameter Name="time" Type="time" Mode="In" />
+        </Function>
+        <Function Name="UpdateDoctor" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="idUser" Type="int" Mode="In" />
+          <Parameter Name="username" Type="varchar" Mode="In" />
+          <Parameter Name="password" Type="varchar" Mode="In" />
+          <Parameter Name="firstName" Type="varchar" Mode="In" />
+          <Parameter Name="lastName" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="UpdateIntervention" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="idIntervention" Type="int" Mode="In" />
+          <Parameter Name="description" Type="varchar" Mode="In" />
+          <Parameter Name="duration" Type="int" Mode="In" />
+        </Function>
+        <Function Name="UpdatePatient" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="idPatient" Type="int" Mode="In" />
+          <Parameter Name="firstName" Type="varchar" Mode="In" />
+          <Parameter Name="lastName" Type="varchar" Mode="In" />
+        </Function>
+        <EntityContainer Name="MVP3ModelStoreContainer">
+          <EntitySet Name="Appointment" EntityType="Self.Appointment" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AppointmentIntervention" EntityType="Self.AppointmentIntervention" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Intervention" EntityType="Self.Intervention" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Patient" EntityType="Self.Patient" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Price" EntityType="Self.Price" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Appointment_Patient" Association="Self.FK_Appointment_Patient">
+            <End Role="Patient" EntitySet="Patient" />
+            <End Role="Appointment" EntitySet="Appointment" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AppointmentIntervention_Appointment" Association="Self.FK_AppointmentIntervention_Appointment">
+            <End Role="Appointment" EntitySet="Appointment" />
+            <End Role="AppointmentIntervention" EntitySet="AppointmentIntervention" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AppointmentIntervention_Intervention" Association="Self.FK_AppointmentIntervention_Intervention">
+            <End Role="Intervention" EntitySet="Intervention" />
+            <End Role="AppointmentIntervention" EntitySet="AppointmentIntervention" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Patient_User" Association="Self.FK_Patient_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="Patient" EntitySet="Patient" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Price_Intervention" Association="Self.FK_Price_Intervention">
+            <End Role="Intervention" EntitySet="Intervention" />
+            <End Role="Price" EntitySet="Price" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="MVP3Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Appointment">
+          <Key>
+            <PropertyRef Name="IdAppointment" />
+          </Key>
+          <Property Name="IdAppointment" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IdPatient" Type="Int32" Nullable="false" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Time" Type="Time" Nullable="false" Precision="7" />
+          <Property Name="EndTime" Type="Time" Precision="7" />
+          <Property Name="Deleted" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Patient" Relationship="Self.FK_Appointment_Patient" FromRole="Appointment" ToRole="Patient" />
+          <NavigationProperty Name="AppointmentInterventions" Relationship="Self.FK_AppointmentIntervention_Appointment" FromRole="Appointment" ToRole="AppointmentIntervention" />
+        </EntityType>
+        <EntityType Name="AppointmentIntervention">
+          <Key>
+            <PropertyRef Name="IdAppointmentIntervention" />
+          </Key>
+          <Property Name="IdAppointmentIntervention" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IdAppointment" Type="Int32" Nullable="false" />
+          <Property Name="IdInterventie" Type="Int32" Nullable="false" />
+          <Property Name="Deleted" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Appointment" Relationship="Self.FK_AppointmentIntervention_Appointment" FromRole="AppointmentIntervention" ToRole="Appointment" />
+          <NavigationProperty Name="Intervention" Relationship="Self.FK_AppointmentIntervention_Intervention" FromRole="AppointmentIntervention" ToRole="Intervention" />
+        </EntityType>
+        <EntityType Name="Intervention">
+          <Key>
+            <PropertyRef Name="IdIntervention" />
+          </Key>
+          <Property Name="IdIntervention" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Description" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Duration" Type="Int32" Nullable="false" />
+          <Property Name="Deleted" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="AppointmentInterventions" Relationship="Self.FK_AppointmentIntervention_Intervention" FromRole="Intervention" ToRole="AppointmentIntervention" />
+          <NavigationProperty Name="Prices" Relationship="Self.FK_Price_Intervention" FromRole="Intervention" ToRole="Price" />
+        </EntityType>
+        <EntityType Name="Patient">
+          <Key>
+            <PropertyRef Name="IdPatient" />
+          </Key>
+          <Property Name="IdPatient" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="IdUser" Type="Int32" Nullable="false" />
+          <Property Name="Deleted" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Appointments" Relationship="Self.FK_Appointment_Patient" FromRole="Patient" ToRole="Appointment" />
+          <NavigationProperty Name="User" Relationship="Self.FK_Patient_User" FromRole="Patient" ToRole="User" />
+        </EntityType>
+        <EntityType Name="Price">
+          <Key>
+            <PropertyRef Name="IdPrice" />
+          </Key>
+          <Property Name="IdPrice" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IdIntervention" Type="Int32" Nullable="false" />
+          <Property Name="StartingDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="FinalDate" Type="DateTime" Precision="0" />
+          <Property Name="Value" Type="Int32" Nullable="false" />
+          <Property Name="Deleted" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Intervention" Relationship="Self.FK_Price_Intervention" FromRole="Price" ToRole="Intervention" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="IdUser" />
+          </Key>
+          <Property Name="IdUser" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Username" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Deleted" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Patients" Relationship="Self.FK_Patient_User" FromRole="User" ToRole="Patient" />
+        </EntityType>
+        <Association Name="FK_Appointment_Patient">
+          <End Role="Patient" Type="Self.Patient" Multiplicity="1" />
+          <End Role="Appointment" Type="Self.Appointment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Patient">
+              <PropertyRef Name="IdPatient" />
+            </Principal>
+            <Dependent Role="Appointment">
+              <PropertyRef Name="IdPatient" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AppointmentIntervention_Appointment">
+          <End Role="Appointment" Type="Self.Appointment" Multiplicity="1" />
+          <End Role="AppointmentIntervention" Type="Self.AppointmentIntervention" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Appointment">
+              <PropertyRef Name="IdAppointment" />
+            </Principal>
+            <Dependent Role="AppointmentIntervention">
+              <PropertyRef Name="IdAppointment" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AppointmentIntervention_Intervention">
+          <End Role="Intervention" Type="Self.Intervention" Multiplicity="1" />
+          <End Role="AppointmentIntervention" Type="Self.AppointmentIntervention" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Intervention">
+              <PropertyRef Name="IdIntervention" />
+            </Principal>
+            <Dependent Role="AppointmentIntervention">
+              <PropertyRef Name="IdInterventie" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Price_Intervention">
+          <End Role="Intervention" Type="Self.Intervention" Multiplicity="1" />
+          <End Role="Price" Type="Self.Price" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Intervention">
+              <PropertyRef Name="IdIntervention" />
+            </Principal>
+            <Dependent Role="Price">
+              <PropertyRef Name="IdIntervention" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Patient_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="Patient" Type="Self.Patient" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="IdUser" />
+            </Principal>
+            <Dependent Role="Patient">
+              <PropertyRef Name="IdUser" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="MVP3Entities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Appointments" EntityType="Self.Appointment" />
+          <EntitySet Name="AppointmentInterventions" EntityType="Self.AppointmentIntervention" />
+          <EntitySet Name="Interventions" EntityType="Self.Intervention" />
+          <EntitySet Name="Patients" EntityType="Self.Patient" />
+          <EntitySet Name="Prices" EntityType="Self.Price" />
+          <EntitySet Name="Users" EntityType="Self.User" />
+          <AssociationSet Name="FK_Appointment_Patient" Association="Self.FK_Appointment_Patient">
+            <End Role="Patient" EntitySet="Patients" />
+            <End Role="Appointment" EntitySet="Appointments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AppointmentIntervention_Appointment" Association="Self.FK_AppointmentIntervention_Appointment">
+            <End Role="Appointment" EntitySet="Appointments" />
+            <End Role="AppointmentIntervention" EntitySet="AppointmentInterventions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AppointmentIntervention_Intervention" Association="Self.FK_AppointmentIntervention_Intervention">
+            <End Role="Intervention" EntitySet="Interventions" />
+            <End Role="AppointmentIntervention" EntitySet="AppointmentInterventions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Price_Intervention" Association="Self.FK_Price_Intervention">
+            <End Role="Intervention" EntitySet="Interventions" />
+            <End Role="Price" EntitySet="Prices" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Patient_User" Association="Self.FK_Patient_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Patient" EntitySet="Patients" />
+          </AssociationSet>
+          <FunctionImport Name="DeleteAppointment">
+          <Parameter Name="idAppointment" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="DeleteAppointmentIntervention">
+            <Parameter Name="idAppointment" Mode="In" Type="Int32" />
+            <Parameter Name="idIntervention" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="DeleteDoctor">
+          <Parameter Name="idUser" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="DeleteIntervention">
+          <Parameter Name="idIntervention" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="DeletePatient">
+          <Parameter Name="idPatient" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="InsertAppointment">
+            <Parameter Name="idPatient" Mode="In" Type="Int32" />
+            <Parameter Name="date" Mode="In" Type="DateTime" />
+            <Parameter Name="time" Mode="In" Type="Time" />
+          </FunctionImport>
+          <FunctionImport Name="InsertAppointmentIntervention">
+            <Parameter Name="idAppointment" Mode="In" Type="Int32" />
+            <Parameter Name="idIntervention" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="InsertDoctor">
+            <Parameter Name="username" Mode="In" Type="String" />
+            <Parameter Name="password" Mode="In" Type="String" />
+            <Parameter Name="firstName" Mode="In" Type="String" />
+            <Parameter Name="lastName" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="InsertIntervention">
+            <Parameter Name="description" Mode="In" Type="String" />
+            <Parameter Name="duration" Mode="In" Type="Int32" />
+            <Parameter Name="value" Mode="In" Type="Int32" />
+            <Parameter Name="startingDate" Mode="In" Type="DateTime" />
+          </FunctionImport>
+          <FunctionImport Name="InsertPatient">
+            <Parameter Name="firstName" Mode="In" Type="String" />
+            <Parameter Name="lastName" Mode="In" Type="String" />
+            <Parameter Name="idUser" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="InsertPrice">
+            <Parameter Name="idIntervention" Mode="In" Type="Int32" />
+            <Parameter Name="value" Mode="In" Type="Int32" />
+            <Parameter Name="startingDate" Mode="In" Type="DateTime" />
+          </FunctionImport>
+          <FunctionImport Name="InterventionPricesBeforeDate" ReturnType="Collection(MVP3Model.InterventionPricesBeforeDate_Result)">
+            <Parameter Name="idIntervention" Mode="In" Type="Int32" />
+            <Parameter Name="date" Mode="In" Type="DateTime" />
+          </FunctionImport>
+          <FunctionImport Name="Login" ReturnType="Collection(MVP3Model.Login_Result)">
+            <Parameter Name="username" Mode="In" Type="String" />
+            <Parameter Name="password" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SortPatientsByInterventionsNumber" ReturnType="Collection(MVP3Model.SortPatientsByInterventionsNumber_Result)">
+          <Parameter Name="idDoctor" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="UpdateAppointment">
+            <Parameter Name="idAppointment" Mode="In" Type="Int32" />
+            <Parameter Name="date" Mode="In" Type="DateTime" />
+            <Parameter Name="time" Mode="In" Type="Time" />
+          </FunctionImport>
+          <FunctionImport Name="UpdateDoctor">
+            <Parameter Name="idUser" Mode="In" Type="Int32" />
+            <Parameter Name="username" Mode="In" Type="String" />
+            <Parameter Name="password" Mode="In" Type="String" />
+            <Parameter Name="firstName" Mode="In" Type="String" />
+            <Parameter Name="lastName" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="UpdateIntervention">
+            <Parameter Name="idIntervention" Mode="In" Type="Int32" />
+            <Parameter Name="description" Mode="In" Type="String" />
+            <Parameter Name="duration" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="UpdatePatient">
+            <Parameter Name="idPatient" Mode="In" Type="Int32" />
+            <Parameter Name="firstName" Mode="In" Type="String" />
+            <Parameter Name="lastName" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="CurrentPricesForInterventions" ReturnType="Collection(MVP3Model.CurrentPricesForInterventions_Result)" />
+        </EntityContainer>
+        <ComplexType Name="InterventionPricesBeforeDate_Result">
+          <Property Type="Int32" Name="Value" Nullable="false" />
+          <Property Type="DateTime" Name="StartingDate" Nullable="false" />
+          <Property Type="DateTime" Name="FinalDate" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="Login_Result">
+          <Property Type="Int32" Name="IdUser" Nullable="false" />
+          <Property Type="String" Name="Username" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="Password" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="FirstName" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="LastName" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="Type" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="Deleted" Nullable="true" MaxLength="50" />
+        </ComplexType>
+        <ComplexType Name="SortPatientsByInterventionsNumber_Result">
+          <Property Type="String" Name="FirstName" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="LastName" Nullable="false" MaxLength="50" />
+          <Property Type="Int32" Name="Number" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="CurrentPricesForInterventions_Result">
+          <Property Type="String" Name="Description" Nullable="false" MaxLength="50" />
+          <Property Type="Int32" Name="Value" Nullable="false" />
+        </ComplexType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="MVP3ModelStoreContainer" CdmEntityContainer="MVP3Entities">
+          <EntitySetMapping Name="Appointments">
+            <EntityTypeMapping TypeName="MVP3Model.Appointment">
+              <MappingFragment StoreEntitySet="Appointment">
+                <ScalarProperty Name="IdAppointment" ColumnName="IdAppointment" />
+                <ScalarProperty Name="IdPatient" ColumnName="IdPatient" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Time" ColumnName="Time" />
+                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
+                <ScalarProperty Name="Deleted" ColumnName="Deleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AppointmentInterventions">
+            <EntityTypeMapping TypeName="MVP3Model.AppointmentIntervention">
+              <MappingFragment StoreEntitySet="AppointmentIntervention">
+                <ScalarProperty Name="IdAppointmentIntervention" ColumnName="IdAppointmentIntervention" />
+                <ScalarProperty Name="IdAppointment" ColumnName="IdAppointment" />
+                <ScalarProperty Name="IdInterventie" ColumnName="IdInterventie" />
+                <ScalarProperty Name="Deleted" ColumnName="Deleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Interventions">
+            <EntityTypeMapping TypeName="MVP3Model.Intervention">
+              <MappingFragment StoreEntitySet="Intervention">
+                <ScalarProperty Name="IdIntervention" ColumnName="IdIntervention" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Duration" ColumnName="Duration" />
+                <ScalarProperty Name="Deleted" ColumnName="Deleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Patients">
+            <EntityTypeMapping TypeName="MVP3Model.Patient">
+              <MappingFragment StoreEntitySet="Patient">
+                <ScalarProperty Name="IdPatient" ColumnName="IdPatient" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="IdUser" ColumnName="IdUser" />
+                <ScalarProperty Name="Deleted" ColumnName="Deleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Prices">
+            <EntityTypeMapping TypeName="MVP3Model.Price">
+              <MappingFragment StoreEntitySet="Price">
+                <ScalarProperty Name="IdPrice" ColumnName="IdPrice" />
+                <ScalarProperty Name="IdIntervention" ColumnName="IdIntervention" />
+                <ScalarProperty Name="StartingDate" ColumnName="StartingDate" />
+                <ScalarProperty Name="FinalDate" ColumnName="FinalDate" />
+                <ScalarProperty Name="Value" ColumnName="Value" />
+                <ScalarProperty Name="Deleted" ColumnName="Deleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="MVP3Model.User">
+              <MappingFragment StoreEntitySet="User">
+                <ScalarProperty Name="IdUser" ColumnName="IdUser" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Deleted" ColumnName="Deleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="DeleteAppointment" FunctionName="MVP3Model.Store.DeleteAppointment" />
+          <FunctionImportMapping FunctionImportName="DeleteAppointmentIntervention" FunctionName="MVP3Model.Store.DeleteAppointmentIntervention" />
+          <FunctionImportMapping FunctionImportName="DeleteDoctor" FunctionName="MVP3Model.Store.DeleteDoctor" />
+          <FunctionImportMapping FunctionImportName="DeleteIntervention" FunctionName="MVP3Model.Store.DeleteIntervention" />
+          <FunctionImportMapping FunctionImportName="DeletePatient" FunctionName="MVP3Model.Store.DeletePatient" />
+          <FunctionImportMapping FunctionImportName="InsertAppointment" FunctionName="MVP3Model.Store.InsertAppointment" />
+          <FunctionImportMapping FunctionImportName="InsertAppointmentIntervention" FunctionName="MVP3Model.Store.InsertAppointmentIntervention" />
+          <FunctionImportMapping FunctionImportName="InsertDoctor" FunctionName="MVP3Model.Store.InsertDoctor" />
+          <FunctionImportMapping FunctionImportName="InsertIntervention" FunctionName="MVP3Model.Store.InsertIntervention" />
+          <FunctionImportMapping FunctionImportName="InsertPatient" FunctionName="MVP3Model.Store.InsertPatient" />
+          <FunctionImportMapping FunctionImportName="InsertPrice" FunctionName="MVP3Model.Store.InsertPrice" />
+          <FunctionImportMapping FunctionImportName="InterventionPricesBeforeDate" FunctionName="MVP3Model.Store.InterventionPricesBeforeDate">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="MVP3Model.InterventionPricesBeforeDate_Result">
+                <ScalarProperty Name="Value" ColumnName="Value" />
+                <ScalarProperty Name="StartingDate" ColumnName="StartingDate" />
+                <ScalarProperty Name="FinalDate" ColumnName="FinalDate" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Login" FunctionName="MVP3Model.Store.Login">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="MVP3Model.Login_Result">
+                <ScalarProperty Name="IdUser" ColumnName="IdUser" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Deleted" ColumnName="Deleted" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SortPatientsByInterventionsNumber" FunctionName="MVP3Model.Store.SortPatientsByInterventionsNumber">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="MVP3Model.SortPatientsByInterventionsNumber_Result">
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="Number" ColumnName="Number" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="UpdateAppointment" FunctionName="MVP3Model.Store.UpdateAppointment" />
+          <FunctionImportMapping FunctionImportName="UpdateDoctor" FunctionName="MVP3Model.Store.UpdateDoctor" />
+          <FunctionImportMapping FunctionImportName="UpdateIntervention" FunctionName="MVP3Model.Store.UpdateIntervention" />
+          <FunctionImportMapping FunctionImportName="UpdatePatient" FunctionName="MVP3Model.Store.UpdatePatient" />
+          <FunctionImportMapping FunctionImportName="CurrentPricesForInterventions" FunctionName="MVP3Model.Store.CurrentPricesForInterventions">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="MVP3Model.CurrentPricesForInterventions_Result">
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Value" ColumnName="Value" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

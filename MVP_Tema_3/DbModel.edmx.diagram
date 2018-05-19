@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="ce0085bbaae24c7686957d50ee8f653e" Name="Diagram1">
+        <EntityTypeShape EntityType="MVP3Model.Appointment" Width="1.5" PointX="5.25" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="MVP3Model.AppointmentIntervention" Width="1.5" PointX="7.5" PointY="1.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="MVP3Model.Intervention" Width="1.5" PointX="5.25" PointY="5.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="MVP3Model.Patient" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="MVP3Model.Price" Width="1.5" PointX="7.5" PointY="5" IsExpanded="true" />
+        <EntityTypeShape EntityType="MVP3Model.User" Width="1.5" PointX="0.75" PointY="1" IsExpanded="true" />
+        <AssociationConnector Association="MVP3Model.FK_Appointment_Patient" ManuallyRouted="false" />
+        <AssociationConnector Association="MVP3Model.FK_AppointmentIntervention_Appointment" ManuallyRouted="false" />
+        <AssociationConnector Association="MVP3Model.FK_AppointmentIntervention_Intervention" ManuallyRouted="false" />
+        <AssociationConnector Association="MVP3Model.FK_Price_Intervention" ManuallyRouted="false" />
+        <AssociationConnector Association="MVP3Model.FK_Patient_User" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

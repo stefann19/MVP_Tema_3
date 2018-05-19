@@ -1,0 +1,28 @@
+﻿<Window x:Class="MVP_Tema_3.Views.InterventionsView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MVP_Tema_3.Views"
+        xmlns:viewModels="clr-namespace:MVP_Tema_3.ViewModels"
+        mc:Ignorable="d"
+        Title="InterventionsView" SizeToContent="WidthAndHeight">
+        <Window.DataContext>
+            <viewModels:InterventionsViewModel></viewModels:InterventionsViewModel>
+        </Window.DataContext>
+        <StackPanel Margin="10">
+            <TextBlock Text="Interventions" TextAlignment="Center"></TextBlock>
+            <StackPanel Orientation="Horizontal">
+                <ListView Name="ListViewInterventions" MinHeight="100" MinWidth="100" ItemsSource="{Binding InterventionsCollectionView}">
+
+                </ListView>
+                <StackPanel MinWidth="50" Margin="5">
+                    <Button Command="{Binding AddInterventionCommand}" Content="Add" MinHeight="10"></Button>
+                    <Button Command="{Binding UpdateInterventionCommand}" CommandParameter="{Binding ElementName=ListViewInterventions,Path=SelectedItem}" Content="Modify" MinHeight="10"></Button>
+                    <Button Command="{Binding DeleteInterventionCommand}" CommandParameter="{Binding ElementName=ListViewInterventions,Path=SelectedItem}" Content="Delete" MinHeight="10"></Button>
+                    <Button Content="Price history"></Button>
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+</Window>
+
